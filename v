@@ -148,3 +148,54 @@ Sub MoveAndRenameFile(sourceFilePath As String, destinationFilePath As String)
         MsgBox "File not found: " & sourceFilePath
     End If
 End Sub
+
+
+
+
+Function ExtractDetailsFromFileName(fileName As String) As Variant
+    Dim regex As Object
+    Dim matches As Object
+    Dim accountName As String
+    Dim date1 As String
+    Dim date2 As String
+
+    Set regex = CreateObject("VBScript.RegExp")
+    
+    ' Regex pattern to match your file name formats
+    ' Pattern explanation:
+    ' - Captures any characters between "for " and the first hyphen as account name
+    ' - Then captures two date patterns in d-m-yyyy format
+    regex.Pattern = "for (.+?)- (\d{1,2}-\d{1,2}-\d{4})- (\d{1,2}-\d{1,2}-\d{4})"
+    regex.Global = False
+    regex.IgnoreCase = True
+
+    Set matches = regex.Execute(fileName)
+
+    If matches.Count = 1 Then
+        accountName = matches(0).SubMatches(0)
+        date1 = matches(0).SubMatches(1)
+        date2 = matches(0).SubMatches(2)
+        ExtractDetailsFromFileName = Array(accountName, date1, date2)
+    Else
+        ExtractDetailsFromFileName = Array("Invalid format", "", "")
+    End If
+End Function
+Sub TestExtractDetails()
+    Dim fileName As String
+    Dim details As Variant
+
+    ' Example file name
+    fileName = "Birthday Report for XYZ Corp- 1-2-2023- 3-4-2023.xlsx"
+
+    ' Call the function
+    details = ExtractDetailsFromFileName(fileName)
+
+    ' Print the results
+    If details(0) <> "Invalid format" Then
+        Debug.Print "Account Name: " & details(0)
+        Debug.Print "Date 1: " & details(1)
+        Debug.Print "Date 2: " & details(2)
+    Else
+        Debug.Print "File name format not recognized."
+    End If
+End Sub
