@@ -165,7 +165,7 @@ Function ExtractDetailsFromFileName(fileName As String) As Variant
     ' Pattern explanation:
     ' - Captures any characters between "for " and the first hyphen as account name
     ' - Then captures two date patterns in d-m-yyyy format
-    regex.Pattern = "for (.+?)- (\d{1,2}-\d{1,2}-\d{4})- (\d{1,2}-\d{1,2}-\d{4})"
+    regex.Pattern = "Report for (.+?)- (\d{1,2}-\d{1,2}-\d{4})-(\d{1,2}-\d{1,2}-\d{4})"
     regex.Global = False
     regex.IgnoreCase = True
 
