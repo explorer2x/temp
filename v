@@ -133,3 +133,18 @@ Sub Test()
     Call CreateFolderIfNotExists(path)
 End Sub
 
+
+
+
+Sub MoveAndRenameFile(sourceFilePath As String, destinationFilePath As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+
+    ' Check if the source file exists
+    If fso.FileExists(sourceFilePath) Then
+        ' Move and rename the file
+        fso.MoveFile Source:=sourceFilePath, Destination:=destinationFilePath
+    Else
+        MsgBox "File not found: " & sourceFilePath
+    End If
+End Sub
