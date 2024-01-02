@@ -101,3 +101,35 @@ For r = 5 To 11
 Next r
 End Sub
 
+
+
+
+Sub CreateFolderIfNotExists(folderPath As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    ' Recursively create the folder if it does not exist
+    If Not fso.FolderExists(folderPath) Then
+        Call CreateParentFolder(fso.GetParentFolderName(folderPath))
+        fso.CreateFolder folderPath
+    End If
+End Sub
+
+Sub CreateParentFolder(parentFolderPath As String)
+    Dim fso As Object
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    ' Check if the parent folder exists
+    If Not fso.FolderExists(parentFolderPath) Then
+        ' Recursively create the parent folder
+        CreateParentFolder fso.GetParentFolderName(parentFolderPath)
+        ' Create the current parent folder
+        fso.CreateFolder parentFolderPath
+    End If
+End Sub
+Sub Test()
+    Dim path As String
+    path = "C:\Your\Path\Here"  ' Change to your desired path
+    Call CreateFolderIfNotExists(path)
+End Sub
+
