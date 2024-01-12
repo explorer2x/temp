@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2024-01-12T04:15:49.534Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="wk8xPGxCvRJRJB0756pg" version="22.1.16" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-12T04:17:18.921Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="raaDQ5QTORM4sKXX0367" version="22.1.16" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="2607" dy="2598" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1912" dy="2217" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -573,6 +573,17 @@
         </mxCell>
         <mxCell id="nEFb0NRuYZ_jhTo4WBhV-166" value="Log result to sheet" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="1520" y="490" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-170" value="" style="endArrow=classic;startArrow=classic;html=1;rounded=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;fillColor=#cce5ff;strokeColor=#3333FF;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="Iln7zaR0tb7gjahA7qLT-51" target="nEFb0NRuYZ_jhTo4WBhV-166">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="990" y="700" as="sourcePoint" />
+            <mxPoint x="1420" y="420" as="targetPoint" />
+            <Array as="points">
+              <mxPoint x="575" y="540" />
+              <mxPoint x="780" y="510" />
+              <mxPoint x="1080" y="520" />
+            </Array>
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
