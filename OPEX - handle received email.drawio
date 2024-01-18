@@ -1,9 +1,12 @@
-<mxfile host="app.diagrams.net" modified="2024-01-15T08:04:45.844Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="iCA5-_6AdyjdIrXU4JjT" version="22.1.16" type="github">
+<mxfile host="app.diagrams.net" modified="2024-01-18T08:31:09.088Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" etag="ej2yCX-VQqPHl0W14Kfb" version="22.1.16" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="2739" dy="2262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2796" dy="2134" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-273" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="nEFb0NRuYZ_jhTo4WBhV-221" target="nEFb0NRuYZ_jhTo4WBhV-272">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
         <mxCell id="nEFb0NRuYZ_jhTo4WBhV-221" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f9f7ed;strokeColor=#36393d;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
           <mxGeometry x="-10" y="-245" width="4460" height="2190" as="geometry" />
         </mxCell>
@@ -643,10 +646,25 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="nEFb0NRuYZ_jhTo4WBhV-266" value="Send Email to Trainee" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="294" y="2240" width="120" height="60" as="geometry" />
+          <mxGeometry x="3662" y="2230" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="nEFb0NRuYZ_jhTo4WBhV-267" value="" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
-          <mxGeometry x="294" y="2380" width="120" height="60" as="geometry" />
+          <mxGeometry x="3662" y="2370" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-269" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="nEFb0NRuYZ_jhTo4WBhV-270" target="nEFb0NRuYZ_jhTo4WBhV-271">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-270" value="Start_audit" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="260" y="2520" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-271" value="" style="whiteSpace=wrap;html=1;rounded=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="260" y="2660" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-272" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;EE_name: {Training Start Date&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Co or Dept&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Task Module&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Training is Completed?&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Manager&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Supervisor&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer1&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer2&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer3&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer4&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer5&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;NHBC Trainer6&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Rcvd #&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;FileNameW #&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Dup #&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;span style=&quot;border-color: var(--border-color); background-color: initial;&quot;&gt;DocW #&lt;/span&gt;}&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry y="2040" width="230" height="270" as="geometry" />
+        </mxCell>
+        <mxCell id="nEFb0NRuYZ_jhTo4WBhV-274" value="&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;audit date&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;sender name&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Received filename&lt;br style=&quot;border-color: var(--border-color);&quot;&gt;&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;FileNameWrong&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;Duplicate&lt;/div&gt;&lt;div style=&quot;border-color: var(--border-color);&quot;&gt;DocTypeWrong&lt;/div&gt;&lt;/div&gt;" style="whiteSpace=wrap;html=1;rounded=0;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="327.5" y="2050" width="235" height="240" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
