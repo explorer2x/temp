@@ -199,3 +199,47 @@ Sub TestExtractDetails()
         Debug.Print "File name format not recognized."
     End If
 End Sub
+
+
+
+
+
+
+
+
+
+
+Sub ListAllFiles()
+    Dim FileSystem As Object
+    Set FileSystem = CreateObject("Scripting.FileSystemObject")
+    Dim startFolder As String
+    Dim sheet As Worksheet
+    Dim rowNumber As Long
+
+    startFolder = "C:\Users\mason_wang\Desktop\JN\test pool\projects\Done - Project - AHDCC Mockup"
+
+    Set sheet = ThisWorkbook.Sheets("Sheet1")
+    rowNumber = 1
+    
+
+    ListFilesRecursive startFolder, FileSystem, sheet, rowNumber
+End Sub
+
+Private Sub ListFilesRecursive(ByVal folderPath As String, ByRef FileSystem As Object, ByRef sheet As Worksheet, ByRef rowNumber As Long)
+    Dim folder As Object
+    Set folder = FileSystem.GetFolder(folderPath)
+    Dim subFolder As Object
+    Dim file As Object
+    
+
+    For Each file In folder.Files
+        sheet.Cells(rowNumber, 1).Value = file.Path
+        sheet.Cells(rowNumber, 2).Value = file.Name
+        rowNumber = rowNumber + 1
+    Next file
+
+    For Each subFolder In folder.SubFolders
+        ListFilesRecursive subFolder.Path, FileSystem, sheet, rowNumber
+    Next subFolder
+End Sub
+
