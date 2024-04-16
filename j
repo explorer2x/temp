@@ -27,3 +27,17 @@ const employeeData = {
 };
 
 console.log(checkForDuplicatePlanTypes(employeeData));
+
+
+
+var allPageTags = new Array();
+
+var allPageTags=document.getElementsByTagName("div");
+for (i=0; i<allPageTags.length; i++)
+if (allPageTags[i].className=='group-id') {
+allPageTags[i].click();
+}
+
+
+
+var ev = new Event('input',{bubbles: true});ev.simulate = true;$0.value = '03/01/2023';$0.dispatchEvent(ev)
