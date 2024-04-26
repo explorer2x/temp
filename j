@@ -149,7 +149,17 @@ async function main_job() {
 		await delay(1);
 	}
 
-
+	const wallstextContent = '[' + JSON.stringify(walls) + ']';
+	const wallstextarea = document.createElement('textarea');
+	wallstextarea.id = "mywall";
+	wallstextarea.value = textContent;
+	document.body.appendChild(wallstextarea);
+	var sameElement = document.getElementById("mywall");
+	console.log(sameElement);
+	console.log("Length of mywall textContent:", sameElement.value.length);
+	
+	
+	
 	for (o = 0; o < walls.length; o++) {
 		var ct = 0;
 		var broker_wall_events = walls[o];
