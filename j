@@ -45,7 +45,6 @@ var ev = new Event('input',{bubbles: true});ev.simulate = true;$0.value = '03/01
 
 
 
-
 javascript: function delay(n) {
 	return new Promise(function(resolve) {
 		setTimeout(resolve, n * delay_second * 1000);
@@ -255,7 +254,7 @@ async function get_ee_job(ee_id) {
 	var ee_timeline = await get_timeline(ee_id);
 	var ee_plans = await get_plans(ee_id);
 	var ee_depts = [];
-	var ee_info = [];
+	var ee_info =[];
 	var ee_address = [];
 	var ee_CafeEnrollments = [];
 	var ee_Enrollments = [];
@@ -350,18 +349,23 @@ async function get_ee_job(ee_id) {
 				const type = typeCell ? typeCell.textContent.trim().toLowerCase() : "";
 				const number = numberCell ? numberCell.textContent.trim() : "";
 
-				if (type.includes("work")) {
-					Work_Phone = number;
-				} else if (type.includes("personal")) {
-					Personal_Phone = number;
+				// Define arrays for work and personal phone identifiers
+				const workIdentifiers = ["work", "business", "main"];
+				const personalIdentifiers = ["personal", "private", "home"];
+
+				if (workIdentifiers.some(identifier => type.includes(identifier))) {
+					Work_Phone = number.replace(/\D/g, "");
+				} else if (personalIdentifiers.some(identifier => type.includes(identifier))) {
+					Personal_Phone = number.replace(/\D/g, "");
 				}
+
 
 			});
 
 
 			return {
 				"Work Phone": Work_Phone,
-				"Personal Phone": Personal_Phone
+				"Home Phone": Personal_Phone
 			}
 		}
 
