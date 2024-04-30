@@ -1,0 +1,35 @@
+
+var jsonObject = {
+}
+
+function input_refresh(tgt_elg, val) {
+	tgt_elg.dispatchEvent(new Event('focusin'));
+	tgt_elg.value = val;
+	tgt_elg.dispatchEvent(new Event('input'));
+	tgt_elg.dispatchEvent(new Event('change'));
+	tgt_elg.dispatchEvent(new Event('blur'));
+	tgt_elg.dispatchEvent(new Event('focusout'));
+};
+
+
+input_refresh(document.querySelector("#searchAcctNumber"), jsonObject['Search Criteria']['AccountID'])
+
+
+
+var allPageTags = document.getElementsByTagName("a");
+for (i = 0; i < allPageTags.length; i++) {
+	if (allPageTags[i].textContent == 'Find') {
+		allPageTags[i].click();
+		break;
+	}
+}
+
+
+//--------------------------will refresh, need invoke below in next PAD element
+
+if (document.querySelector("#searchResults").rows.length == 2) {
+	document.querySelector("#searchResults").rows[1].cells[0].firstChild.click()
+}
+
+
+
