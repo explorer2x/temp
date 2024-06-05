@@ -1,0 +1,256 @@
+javascript: function delay(n) {
+	return new Promise(function(resolve) {
+		setTimeout(resolve, n * delay_second * 300);
+	});
+}
+
+async function get_event(ClientId, FromDate, ToDate) {
+	await delay(1);
+	const fetch_url = 'https://' + document.domain + '/benefits/Brokers/Wall/GetEventFeed';
+	const data = {
+		"filter": {
+			"BrokerId": globals.b_id,
+			"ClientId": ClientId,
+			"FromDate": FromDate,
+			"ToDate": ToDate,
+			//"IsTodo": true,
+			//"IsCompletedTodo": false,
+			"WallItemTypeId": 2,
+			"WallUserTypeId": 2,
+		},
+		"pagination": {}
+	}
+	try {
+		console.log()
+		const response = await fetch(fetch_url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json; charset=UTF-8',
+				'Accept': 'application/json, text/javascript, */*; q=0.01',
+				'Entoken': token,
+			},
+			body: JSON.stringify(data)
+		});
+		const responseData = await response.json();
+		return responseData;
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+async function get_client_id_list(fetch_url, feed_id) {
+	await delay(1);
+	const data = feed_id;
+	try {
+		const response = await fetch(fetch_url, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json; charset=utf-8',
+				'Accept': 'application/json, text/javascript, */*; q=0.01',
+				'Entoken': token,
+				'Referer': 'https://' + document.domain + '/benefits/Brokers/Wall/'
+			},
+			body: data
+		});
+		const responseData = await response.json();
+		return (responseData);
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+
+async function ChangeClient(url, data) {
+	await delay(1);
+	try {
+		await fetch('https://' + document.domain + '/benefits/Resources/GenerateToken')
+		await fetch('https://' + document.domain + '/benefits/brokers/')
+		await delay(2);
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Accept': "*/*",
+				'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+				'Entoken': token
+			},
+			body: "s=" + data
+		});
+		const responseData = await response.text();
+		return (responseData);
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+
+async function main_job() {
+	var ee_ids = [];
+	var ee_col = {};
+	var walls = [];
+
+
+	var incomplet = await get_client_id_list(incomp_url, 0);
+	for (var o = 0; o < incomplet.length; o++) {
+
+		if (incomplet[o].InitialIncompleteItems != 0) {
+
+			var BrokerClientId = incomplet[o].BrokerClientId;
+			var ClientId = incomplet[o].ClientId;
+
+			var Wall_detail = await get_event(ClientId, FromDate, ToDate);
+
+			var broker_wall_events = Wall_detail.Directives.Listings;
+			walls.push(broker_wall_events);
+		}
+		await delay(1);
+	}
+
+
+
+	for (var o = 0; o < walls.length; o++) {
+		var ct = 0;
+		var broker_wall_events = walls[o];
+		var res = [];
+		for (p = 0; p < broker_wall_events.length; p++) {
+			var result = {};
+			var client_id = broker_wall_events[p].ClientId;
+			var broker_id = broker_wall_events[p].BrokerId;
+			var emp_ID = broker_wall_events[p].EmpId;
+			if (!ee_ids.includes(emp_ID)) {
+				ee_ids.push(emp_ID);
+				var ee_info = [];
+			} else {
+				var ee_info = [];
+			}
+
+			var result = {
+				ClientName: broker_wall_events[p].ClientName,
+				CreatedDate: broker_wall_events[p].CreatedDate,
+				Reason: broker_wall_events[p].Reason,
+				EmpId: broker_wall_events[p].EmpId,
+				Feed: broker_wall_events[p].Feed,
+				EmployeeName: broker_wall_events[p].EmployeeName,
+				WallID: broker_wall_events[p].Id
+			};
+
+
+			if ((emp_ID in ee_col)) {
+
+				ee_col[emp_ID]['Wall'].push(result);
+
+			} else if (!(emp_ID in ee_col)) {
+
+				var temp_c = {};
+				var temp_res = [];
+				temp_c['EEINFO'] = ee_info;
+				temp_res.push(result);
+				temp_c['Wall'] = temp_res;
+				ee_col[emp_ID] = temp_c;
+
+			}
+		}
+
+	}
+
+	const textContent = '[' + JSON.stringify(ee_col) + ']';
+	const textarea = document.createElement('textarea');
+	textarea.id = "myres";
+	textarea.value = textContent;
+	document.body.appendChild(textarea);
+	var sameElement = document.getElementById("myres");
+	console.log(sameElement);
+	console.log("Length of textContent:", sameElement.value.length);
+}
+
+async function change_company(url, data) {
+	await delay(1);
+	try {
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				'Accept': "application/json, text/javascript, */*; q=0.01",
+				'Content-Type': 'application/json',
+				'Entoken': token
+			},
+			body: JSON.stringify(data)
+		});
+		const responseData = await response.text();
+		return (responseData);
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+
+async function get_call(url, uid) {
+	await delay(1);
+	console.log('now fetching ' + url);
+	try {
+		var response = await fetch(url, {
+			headers: {
+				'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+				'Referer': 'https://' + document.domain + '/benefits/Hris/Employee/Manage?empId=' + uid
+			}
+		});
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		console.log('fetch finished');
+		return await response.text();
+	} catch (error) {
+		console.error('There was a problem with the fetch operation:', error);
+	}
+}
+
+
+async function job() {
+	await main_job()
+
+};
+const processeditem = [];
+var get_client_url = 'https://' + document.domain + '/benefits/Brokers/Wall/GetIncompleteClientItems';
+var broker_wall_url = 'https://' + document.domain + '/benefits/Brokers/Wall/BrokerWall';
+var incomp_url = 'https://' + document.domain + '/benefits/Brokers/Wall/GetIncompleteClientItems';
+var scriptTags = document.getElementsByTagName('script');
+var token = null;
+var tokenRegex = /var token = '([A-F0-9]+)';/;
+for (var i = 0; i < scriptTags.length; i++) {
+	var scriptContent = scriptTags[i].textContent || scriptTags[i].innerHTML;
+	var match = tokenRegex.exec(scriptContent);
+	if (match) {
+		token = match[1];
+		break;
+	}
+}
+var delay_second = 0.5;
+
+var daysAgo = 60;
+var FromDate = new Date(Date.now() - daysAgo * 24 * 60 * 60 * 1000).toLocaleDateString('en-US');
+var ToDate = new Date().toLocaleDateString('en-US');
+
+job()
+
+
+
+
+
+
+
+
+
+const res_el = document.getElementById("myres");
+const jsvar = res_el.value;
+const jsonData = JSON.parse(jsvar)[0];
+
+let combinedWalls = [];
+
+Object.keys(jsonData).forEach(empId => {
+	let wallEntries = jsonData[empId].Wall;
+	combinedWalls = combinedWalls.concat(wallEntries);
+});
+
+const textContent = JSON.stringify(combinedWalls);
+
+const textarea = document.createElement('textarea');
+textarea.id = "mywall";
+textarea.value = textContent;
+document.body.appendChild(textarea);
+var sameElement = document.getElementById("mywall");
+console.log(sameElement);
+console.log("Length of textContent:", sameElement.value.length);
