@@ -1,0 +1,184 @@
+
+Sub functiontest(EEJSON_folder, eeJsonFile)
+
+'empid = ""
+eeJsonFile = EEJSON_folder & eeJsonFile
+
+
+' Set reference to the worksheet where data will be populated
+Dim st As Worksheet
+Set st = Workbooks("Data Capture Template v2 0808 1520(1).xlsm").Sheets("DC")
+
+
+' Delete existing data in Column B and shift cells left
+    st.Cells.Delete Shift:=xlToLeft
+
+' Read JSON file content into a string
+
+    eeJson = F_util.ReadTextFileToString(eeJsonFile)
+' Parse the JSON string into a dictionary object
+    Dim eeJson_obj As Object
+    Set eeJson_obj = JsonConverter.ParseJson(eeJson)
+    
+' Retrieve keys from the parsed JSON object
+    json_k = eeJson_obj.Keys
+    
+    
+    
+' Iterate through each key in the JSON object
+    For u = 0 To UBound(json_k)
+        start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+        
+        Section_name = "Section: " & json_k(u)
+        
+        st.Cells(start_r + 2, 1).Value = Section_name
+        
+        
+        
+        'Debug.Print json_k(u), TypeName(eeJson_obj(json_k(u)))
+        
+            ' Check if the current item is a collection
+            If TypeName(eeJson_obj(json_k(u))) = "Collection" Then
+                start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+                For i = 1 To eeJson_obj(json_k(u)).Count
+                    
+                    If TypeName(eeJson_obj(json_k(u))(i)) = "Collection" Then
+                       For o = 1 To eeJson_obj(json_k(u))(i).Count
+                           'Debug.Print TypeName(eeJson_obj(json_k(u))(i)(o))
+                           st.Cells(start_r + o, 1).Value = eeJson_obj(json_k(u))(i)(o)
+                       Next o
+                   
+                    ElseIf TypeName(eeJson_obj(json_k(u))(i)) = "Dictionary" Then
+                   
+                       Set layer2_dic = eeJson_obj(json_k(u))(i)
+                       layer2_keys = layer2_dic.Keys
+                       
+                       For i_layer2 = 0 To UBound(layer2_keys)
+                        If i = 1 Then
+                            st.Cells(start_r + i_layer2 + 1, 1).Value = layer2_keys(i_layer2)
+                        End If
+                            st.Cells(start_r + i_layer2 + 1, i + 1).Value = layer2_dic(layer2_keys(i_layer2))
+
+                       Next i_layer2
+                   
+                   
+                    ElseIf TypeName(eeJson_obj(json_k(u))(i)) = "String" Then
+                        st.Cells(start_r + 1, 1).Value = "Value"
+                        st.Cells(start_r + 1, i + 1).Value = eeJson_obj(json_k(u))(i)
+                   
+                    End If
+                   
+                Next i
+    
+            ' Check if the current item is a Dictionary
+            ElseIf TypeName(eeJson_obj(json_k(u))) = "Dictionary" Then
+                If (json_k(u)) = "Plans" Then
+                    start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+                    
+                    st.Cells(start_r + 1, 1).Value = "Plan Name"
+                    st.Cells(start_r + 2, 1).Value = "Carrier"
+                    
+                
+                    Set layer1_dic = eeJson_obj(json_k(u))
+                    
+                    layer1_keys = eeJson_obj(json_k(u)).Keys
+     
+
+                    For i = 0 To UBound(layer1_keys)
+                        st.Cells(start_r + 1, i + 2).Value = layer1_keys(i)
+                        st.Cells(start_r + 2, i + 2).Value = layer1_dic(layer1_keys(i))
+                    Next i
+                    
+
+                    
+                Else
+    
+    
+                    Set layer1_dic = eeJson_obj(json_k(u))
+                    layer1_keys = eeJson_obj(json_k(u)).Keys
+                    
+                    For i = 0 To UBound(layer1_keys)
+                        'Debug.Print layer1_keys(i), TypeName(layer1_keys(i))
+                        
+                        start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+                        
+                        If TypeName(layer1_dic(layer1_keys(i))) = "String" Then   
+                                st.Cells(start_r + 1, 1).Value = layer1_keys(i)
+                                st.Cells(start_r + 1, 2).Value = layer1_dic(layer1_keys(i))
+                        ElseIf TypeName(layer1_dic(layer1_keys(i))) = Null Then
+                                 st.Cells(start_r + 1, 1).Value = layer1_keys(i)
+                        ElseIf TypeName(layer1_dic(layer1_keys(i))) = "Collection" Then
+                            
+                            Subsection_name = "Subsection: " & layer1_keys(i)
+                            st.Cells(start_r + 1, "a").Value = Subsection_name
+                            start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+
+                            Set layer2_col = layer1_dic(layer1_keys(i))
+                            For c = 1 To layer2_col.Count
+                                Set layer2_dic = layer2_col(c)
+                                layer2_keys = layer2_dic.Keys
+                                For o = 0 To UBound(layer2_keys)
+                                
+                                    layer2_key = layer2_keys(o)
+                                    layer2_v = ""
+                                    
+                                    st.Cells(start_r + o + 1, 1).Value = layer2_key
+                                    
+                                    If TypeName(layer2_dic(layer2_keys(o))) = "Collection" Then
+                                    
+                                    
+                                        Set layer3_col = layer2_dic(layer2_keys(o))
+                                        For p = 1 To layer3_col.Count
+                                            layer2_v = layer2_v & "," & layer3_col(p)
+                                        Next p
+                                    
+                                    Else
+                                        layer2_v = layer2_dic(layer2_keys(o))
+                                    End If
+
+                                    st.Cells(start_r + o + 1, c + 1).Value = layer2_v
+
+                                Next o
+                                
+                            Next c
+                        End If
+                    Next i
+            
+    
+    
+    
+                End If
+    
+            End If
+
+    Next u
+
+
+
+    Set res = get_pcp(EEJSON_folder, eeJsonFile)
+
+    If res.Count > 0 Then
+    
+
+        
+        
+    start_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+    st.Cells(start_r + 2, "a").Value = "Section: Reports_PrimaryCarePhysicians"
+        
+    cell_r = st.Cells(st.Rows.Count, "a").End(xlUp).row
+        For i = 1 To res.Count
+            Set res_dic = res(i)
+            
+            res_dic_k = res_dic.Keys
+            
+            
+            
+            For o = 0 To UBound(res_dic_k)
+                
+                st.Cells(cell_r + o + 1, 1).Value = res_dic_k(o)
+                st.Cells(cell_r + o + 1, 1 + i).Value = res_dic(res_dic_k(o))
+            Next o
+        Next i
+    End If
+    
+End Sub
