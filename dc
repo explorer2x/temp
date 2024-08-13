@@ -1,3 +1,48 @@
+Sub main()
+
+Dim EEJSON_folder As String
+EEJSON_folder = "C:\JSON\"
+csvFilename = Dir(EEJSON_folder & "*.txt")
+Dim c As New Collection
+
+Debug.Print "fetch all files", "start", Now
+Do While csvFilename <> ""
+
+    c.Add csvFilename
+    csvFilename = Dir()
+Loop
+Debug.Print "fetch all files", "end", Now
+
+For i = 1 To c.Count
+
+    If c(i) <> "wall.txt" Then
+    timethen = Now
+    'Debug.Print c(i), GetFileSizeKB(EEJSON_folder & c(i)) & "kb", "start", Now
+        'Call ff(EEJSON_folder, c(i))
+        Call functiontest(EEJSON_folder, c(i))
+    'Debug.Print c(i), "end", Now
+    
+     Debug.Print c(i), GetFileSizeKB(EEJSON_folder & c(i)) & "kb", "Time: " & Format(Now - timethen, "hh:mm:ss")
+    End If
+Next i
+End Sub
+
+Function GetFileSizeKB(filePath As String) As Double
+    
+    Dim fileSize As Long
+    fileSize = FileLen(filePath)
+    
+    If Err.Number <> 0 Then
+        GetFileSizeKB = -1 ' Return -1 if there's an error (e.g., file not found)
+    Else
+        GetFileSizeKB = Round(fileSize / 1024, 2) ' Convert bytes to KB and round to 2 decimal places
+    End If
+
+End Function
+
+
+
+
 
 Sub functiontest(EEJSON_folder, eeJsonFile)
 
