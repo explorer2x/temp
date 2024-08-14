@@ -17,15 +17,57 @@ For i = 1 To c.Count
 
     If c(i) <> "wall.txt" Then
     timethen = Now
+    
     'Debug.Print c(i), GetFileSizeKB(EEJSON_folder & c(i)) & "kb", "start", Now
         'Call ff(EEJSON_folder, c(i))
         Call functiontest(EEJSON_folder, c(i))
     'Debug.Print c(i), "end", Now
     
-     Debug.Print c(i), GetFileSizeKB(EEJSON_folder & c(i)) & "kb", "Time: " & Format(Now - timethen, "hh:mm:ss")
+     Debug.Print c(i), "cpu usage: " & GetCPUUsage(), "Memory usage: " & GetMemoryUsagePercentage(), "filesize: " & GetFileSizeKB(EEJSON_folder & c(i)) & "kb", "Time: " & Format(Now - timethen, "hh:mm:ss")
     End If
 Next i
 End Sub
+
+
+
+Function GetMemoryUsagePercentage() As String
+    Dim objWMIService As Object
+    Dim colOS As Object
+    Dim objOS As Object
+    Dim usedMemoryPercentage As Double
+
+    ' Connect to the WMI service
+    Set objWMIService = GetObject("winmgmts:\\.\root\CIMV2")
+    ' Query operating system properties
+    Set colOS = objWMIService.ExecQuery("Select TotalVisibleMemorySize, FreePhysicalMemory from Win32_OperatingSystem", , 48)
+
+    For Each objOS In colOS
+        ' Calculate the used memory percentage
+        usedMemoryPercentage = ((objOS.TotalVisibleMemorySize - objOS.FreePhysicalMemory) / objOS.TotalVisibleMemorySize) * 100
+    Next
+
+    GetMemoryUsagePercentage = Format(usedMemoryPercentage, "0.00") & "%"
+End Function
+
+
+
+Function GetCPUUsage() As String
+    Dim objWMIService As Object
+    Dim colItems As Object
+    Dim objItem As Object
+    Dim strReturn As String
+    
+    ' Connect to the WMI service
+    Set objWMIService = GetObject("winmgmts:\\.\root\CIMV2")
+    ' Query CPU load
+    Set colItems = objWMIService.ExecQuery("Select * from Win32_Processor", , 48)
+    
+    For Each objItem In colItems
+        strReturn = strReturn & "CPU " & objItem.DeviceID & " Usage: " & objItem.LoadPercentage & "%"
+    Next
+    
+    GetCPUUsage = strReturn
+End Function
 
 Function GetFileSizeKB(filePath As String) As Double
     
