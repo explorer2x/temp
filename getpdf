@@ -1,0 +1,40 @@
+Sub ListPDFFiles()
+    Dim fso As New FileSystemObject
+    Dim startFolder As String
+    Dim targetSheet As Worksheet
+    Dim row As Integer
+
+    ' Set the starting folder
+    startFolder = "C:\YourFolderPath"  ' Change to your folder path
+
+    ' Setup the worksheet
+    Set targetSheet = ThisWorkbook.Sheets("Sheet1")  ' Change to your target sheet
+    targetSheet.Cells.Clear
+    row = 1
+    
+    ' Call the recursive procedure
+    ListFiles startFolder, fso, targetSheet, row
+    MsgBox "Finished listing PDF files."
+End Sub
+
+Sub ListFiles(folderPath As String, fso As FileSystemObject, ByRef targetSheet As Worksheet, ByRef row As Integer)
+    Dim folder As Folder, subFolder As Folder
+    Dim file As file
+    
+    ' Get the folder object
+    Set folder = fso.GetFolder(folderPath)
+    
+    ' Check each file in the folder
+    For Each file In folder.Files
+        If LCase(fso.GetExtensionName(file.Name)) = "pdf" Then
+            ' If file is a PDF, write its path to Excel
+            targetSheet.Cells(row, 1).Value = file.Path
+            row = row + 1
+        End If
+    Next file
+    
+    ' Recursively search subfolders
+    For Each subFolder In folder.SubFolders
+        ListFiles subFolder.Path, fso, targetSheet, row
+    Next subFolder
+End Sub
