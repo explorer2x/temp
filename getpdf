@@ -28,7 +28,7 @@ Sub ListFiles(folderPath As String, fso As FileSystemObject, ByRef targetSheet A
     For Each file In folder.Files
         If LCase(fso.GetExtensionName(file.Name)) = "pdf" Then
             ' If file is a PDF, write its path to Excel
-            targetSheet.Cells(row, 1).Value = file.Path
+            targetSheet.Cells(row, 1).Value = file.Name
             row = row + 1
         End If
     Next file
