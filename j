@@ -1,13 +1,10 @@
-
-
-
 javascript: function delay(n) {
 	return new Promise(function(resolve) {
 		setTimeout(resolve, n * delay_second * 300);
 	});
 }
 
-async function get_event(ClientId, FromDate, ToDate,LastId) {
+async function get_event(ClientId, FromDate, ToDate, LastId) {
 	await delay(1);
 	const fetch_url = 'https://' + document.domain + '/benefits/Licensees/Wall/GetEventFeed';
 	const data = {
@@ -21,7 +18,9 @@ async function get_event(ClientId, FromDate, ToDate,LastId) {
 			"WallItemTypeId": 2,
 			"WallUserTypeId": 1,
 		},
-		"pagination": {"LastId": LastId}
+		"pagination": {
+			"LastId": LastId
+		}
 	}
 	try {
 		console.log()
@@ -63,15 +62,15 @@ async function get_client_id_list(fetch_url, feed_id) {
 
 async function ChangeClient(url, data) {
 	await delay(1);
-	
-	
+
+
 	try {
-	    
-	    await fetch('https://' + document.domain + '/benefits/Resources/GenerateToken')
+
+		await fetch('https://' + document.domain + '/benefits/Resources/GenerateToken')
 		await fetch('https://' + document.domain + '/benefits/Licensees/')
 
-        const jsonData = JSON.stringify(data);
-        await delay(2);
+		const jsonData = JSON.stringify(data);
+		await delay(2);
 		const response = await fetch(url, {
 			method: 'POST',
 			headers: {
@@ -92,26 +91,26 @@ async function ChangeClient(url, data) {
 
 
 async function main_job() {
-    
-    
-    async function fetchListings(clientId, fromDate, toDate, startId = 0) {
-        let listings = [];
-        let lastId;
 
-      
-        const result = await get_event(clientId, fromDate, toDate, startId);
-        if (result.Directives && result.Directives.Listings) {
-            listings = result.Directives.Listings;
-            if (listings.length === 250) {
-                lastId = listings[listings.length - 1].Id;
-                const additionalListings = await fetchListings(clientId, fromDate, toDate, lastId);
-                listings = listings.concat(additionalListings);
-            }
-        }
 
-        return listings;
-    }
-    
+	async function fetchListings(clientId, fromDate, toDate, startId = 0) {
+		let listings = [];
+		let lastId;
+
+
+		const result = await get_event(clientId, fromDate, toDate, startId);
+		if (result.Directives && result.Directives.Listings) {
+			listings = result.Directives.Listings;
+			if (listings.length === 250) {
+				lastId = listings[listings.length - 1].Id;
+				const additionalListings = await fetchListings(clientId, fromDate, toDate, lastId);
+				listings = listings.concat(additionalListings);
+			}
+		}
+
+		return listings;
+	}
+
 	var ee_ids = [];
 	var ee_col = {};
 	var walls = [];
@@ -125,7 +124,7 @@ async function main_job() {
 			var BrokerClientId = incomplet[o].BrokerClientId;
 			var ClientId = incomplet[o].ClientId;
 
-		    var Wall_detail = await fetchListings(ClientId, FromDate, ToDate);
+			var Wall_detail = await fetchListings(ClientId, FromDate, ToDate);
 			walls.push(Wall_detail);
 			await delay(1);
 		}
@@ -145,9 +144,11 @@ async function main_job() {
 				if (ct == 0) {
 					var ChangeEmployeePostJson_url = 'https://' + document.domain + '/benefits/Licensees/Session/ChangeClient';
 					var ChangeEmployeePostJson_url = 'https://' + document.domain + '/benefits/Licensees/Session/ChangeClientPostJson';
-					
-					var combinedString= `${client_id},${broker_id}`;
-					await ChangeClient(ChangeEmployeePostJson_url, {"s": combinedString})
+
+					var combinedString = `${client_id},${broker_id}`;
+					await ChangeClient(ChangeEmployeePostJson_url, {
+						"s": combinedString
+					})
 					ct = ct + 1;
 				}
 				var ee_info = await get_ee_job(emp_ID);
@@ -517,25 +518,25 @@ async function get_ee_job(ee_id) {
 	}
 
 	async function get_BS_Current(ee_id) {
-		const html_var = await get_call('https://www.employeenavigator.com/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=1');
+		const html_var = await get_call('https://' + document.domain + '/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=1');
 		var eventsData = parse_Current_OE(html_var)
 		return eventsData;
 	}
 
 	async function get_BS_OE(ee_id) {
-		const html_var = await get_call('https://www.employeenavigator.com/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=2');
+		const html_var = await get_call('https://' + document.domain + '/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=2');
 		var eventsData = parse_Current_OE(html_var)
 		return eventsData;
 	}
 
 	async function get_BS_Pending(ee_id) {
-		const html_var = await get_call('https://www.employeenavigator.com/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=5');
+		const html_var = await get_call('https://' + document.domain + '/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=5');
 		var eventsData = parse_Current_OE(html_var)
 		return eventsData;
 	}
 
 	async function get_BS_History(ee_id) {
-		const html_var = await get_call('https://www.employeenavigator.com/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=4');
+		const html_var = await get_call('https://' + document.domain + '/benefits/Hris/Employee/SummaryPartial?empId=' + ee_id + '&typeId=4');
 		var eventsData = parse_History(html_var)
 		return eventsData;
 	}
@@ -591,7 +592,9 @@ async function get_ee_job(ee_id) {
 
 		if (tables.length === 0) {
 			// Directly add the 'No coverages to show' message to jsonResult if no tables are found
-			jsonResult.push({ "Coverages": "No coverages to show" });
+			jsonResult.push({
+				"Coverages": "No coverages to show"
+			});
 			return jsonResult
 		} else {
 
