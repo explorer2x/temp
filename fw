@@ -1,0 +1,108 @@
+'The macro and its source code is owned by resource Pro, LLC. and is protected by the US copyright laws and international treaty provisions.
+'You may not remove the copyright notice from any copy of the original file or any copy of the written materials.
+'The macro is intended to be used by Resource pro employees only.
+
+
+'Note1: Let Fernando Zhao Know if you have any questions
+'Note2: This is a Outlook Macro, please put this code into Outlook/ThisOutlookSession
+'Note3: Please check if you need to change the Macro Trust Setting
+'Note4: You must restart the Outlook before the first time you are trying to use the tool
+
+
+'Build a WithEvents to generate the new event Items; and get the specified new items
+Private WithEvents Items As Outlook.Items
+
+Sub SetFolder(strFolder As String)
+    'Set up the target email folder
+    'This macro 's priority lower than Outlook rules, so we can use Outlook Rules move the mails to target folder and this automation can only monitor the target folder
+    strFolder = "RPA@resourcepro.com/Inbox/RIA/AIM/Temp"
+End Sub
+
+Sub SetForwardRules(ByVal Item As Object)
+
+    'There are 5 arguments in the FwdMail function,
+    '1. Items - No need to update,
+    '2. Subject, input the text, and the code will forward the email while the subject contains the provided string.
+    '3. Body, input the text, and the code will forward the email while the email body contains the provided string.
+    '4. Sender, input the text, and the code will forward the email while the email sender eaqual to the provided string.
+    '5. EmailRecipient, input the target EmailRecipient, the code will set the recipent per this argument. if you want to forward to multiple recepients, use ";" as separator
+
+    'Below sample will forward the email while the email subject Contains "Hartford - Verification Code", Body contains "our Code is"; email sender is "DoNotReplay@Hartford.com"_
+    ' to "Fernando_zhao@resourcepro.com.cn;RPA@resourcepro.com"
+    'Call FwdMail(Item, "Hartford - Verification Code", "Your Code is", "DoNotReplay@Hartford.com", "Fernando_zhao@resourcepro.com.cn;RPA@resourcepro.com")
+    Call FwdMail(Item, "Test", "asd", "Fernando Zhao", "RPA@resourcepro.com")
+    
+    'If you want to process more than one type email, just set up some new Rules per the rules:
+'    Call FwdMail(Item, "Travelers - Verification Code", "Your Code is", "Travelers's masil Box", "Fernando_zhao@resourcepro.com.cn;RPA@resourcepro.com")
+'    Call FwdMail(Item, "Nationwide - Verification Code", "Your Code is", "Nationwide's masil Box", "Fernando_zhao@resourcepro.com.cn;RPA@resourcepro.com")
+
+End Sub
+
+'Outlook Starstartup activity
+'User need to restart Outlook before first use
+
+Private Sub Application_Startup()
+
+    Dim outlookFldr As Folder
+    Dim FolderLayer
+    Dim strFolder As String
+    'Set email folder layer
+    
+    'set up the target folder
+    Call SetFolder(strFolder)
+
+    FoldersArray = Split(strFolder, "/")
+    Set outlookFldr = Application.Session.Folders.Item(FoldersArray(0))
+    
+    'Analyze the folder laysers
+    If Not outlookFldr Is Nothing Then
+        For i = 1 To UBound(FoldersArray, 1)
+            Set outlookFldr = outlookFldr.Folders.Item(FoldersArray(i))
+        Next
+    End If
+    
+    'Get the Items in target folder
+    Set Items = outlookFldr.Items
+    
+End Sub
+
+'Event while New Emails arrives
+Private Sub Items_ItemAdd(ByVal Item As Object)
+    Call SetForwardRules(Item)
+End Sub
+
+
+Sub FwdMail(ByVal Item As Object, Subject As String, Body As String, Sender As String, EmailRecipient As String)
+
+On Error Resume Next
+
+If Sender <> "" Then
+    If InStr(Item.Subject, Subject) <> 0 And InStr(Item.Body, Body) <> 0 And Item.Sender = Sender And Item.Sender <> Session.CurrentUser Then
+        Debug.Print ("New Email's Subject is: " & Item.Subject)
+        Set myFwd = Item.Forward
+        'myFwd.Recipients.Add "RPA@resourcepro.com"
+        For i = 0 To UBound(Split(EmailRecipient, ";"))
+            myFwd.Recipients.Add Split(EmailRecipient, ";")(i)
+        Next
+        myFwd.Send
+        Set myFwd = Nothing
+    End If
+Else
+
+    If InStr(Item.Subject, Subject) <> 0 And InStr(Item.Body, Body) <> 0 And Item.Sender <> Session.CurrentUser Then
+        Debug.Print ("New Email's Subject is: " & Item.Subject)
+        Set myFwd = Item.Forward
+        'myFwd.Recipients.Add "RPA@resourcepro.com"
+        For i = 0 To UBound(Split(EmailRecipient, ";"))
+            myFwd.Recipients.Add Split(EmailRecipient, ";")(i)
+        Next
+        myFwd.Send
+        Set myFwd = Nothing
+    End If
+
+End If
+
+On Error GoTo 0
+    
+End Sub
+
