@@ -1,0 +1,130 @@
+javascript: function createXHR() {
+	var XHR = [function() {
+		return new XMLHttpRequest()
+	}, function() {
+		return new ActiveXObject("Msxml2.XMLHTTP")
+	}, function() {
+		return new ActiveXObject("Msxml3.XMLHTTP")
+	}, function() {
+		return new ActiveXObject("Microsoft.XMLHTTP")
+	}];
+	var xhr = null;
+	for (var i = 0; i < XHR.length; i++) {
+		try {
+			xhr = XHR[i]();
+		} catch (e) {
+			continue
+		}
+		break;
+	}
+	return xhr;
+};
+
+function getBlob(url, cb) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("GET", url, true);
+	xhr.responseType = "blob";
+	xhr.onload = function() {
+		if (xhr.status === 200) {
+			cb(xhr.response);
+		}
+	};
+	xhr.send();
+}
+
+function saveAs(blob, filename) {
+	if (window.navigator.msSaveOrOpenBlob) {
+		navigator.msSaveBlob(blob, filename);
+	} else {
+		var link = document.createElement("a");
+		var body = document.querySelector("body");
+		link.href = window.URL.createObjectURL(blob);
+		link.download = filename;
+		link.style.display = "none";
+		body.appendChild(link);
+		link.click();
+		body.removeChild(link);
+		window.URL.revokeObjectURL(link.href);
+	}
+}
+
+function download(url, filename) {
+	getBlob(url, function(blob) {
+		saveAs(blob, filename);
+	});
+}
+
+function get_report(url) {
+	var params = {
+		DateRangeType: "1",
+		FromDate: "",
+		ToDate: "",
+		IsCertsChecked: false,
+	};
+	var xhr = createXHR();
+	xhr.open("POST", url, false);
+	xhr.setRequestHeader("Content-type", "application/json");
+	xhr.send(JSON.stringify(params));
+	var act_rpt = (xhr.responseText);
+	const obj = JSON.parse(act_rpt);
+	return obj
+}
+
+function delay(n) {
+	return new Promise(function(resolve) {
+		setTimeout(resolve, n * 1000);
+	});
+};
+async function myAsyncFunction(obj) {
+	var CL = "https://foragents.travelers.com/Business/BillingAndPolicyServices/TransactionsDocumentPdf?q=";
+	var PL = "https://foragents.travelers.com/Personal/AgencyReports/PiTransactionsDocumentPdf?q=";
+	var cl_url = "https://foragents.travelers.com/Business/BillingAndPolicyServices/GetPolicyActivityReport";
+	var pl_url = "https://foragents.travelers.com/Personal/AgencyReports/GetPolicyActivityReport";
+	var rpt_obj = get_report(cl_url);
+	for (var i = 0; i < rpt_obj.PolicyActivities.length; i++) {
+		var ins_url = rpt_obj.PolicyActivities[i].InsuredTransactionPdfUrl;
+		var agt_url = rpt_obj.PolicyActivities[i].AgentTransactionPdfUrl;
+		var NameInsured = rpt_obj.PolicyActivities[i].NameInsured;
+		var PolicyNumber = rpt_obj.PolicyActivities[i].PolicyNumber;
+		var ProcessDate = rpt_obj.PolicyActivities[i].ProcessDate;
+		var TransactionType = rpt_obj.PolicyActivities[i].TransactionType;
+		var TransactionEffectiveDate = rpt_obj.PolicyActivities[i].TransactionEffectiveDate;
+		var IsInsuredDocType = rpt_obj.PolicyActivities[i].IsInsuredDocType;
+		if (IsInsuredDocType == true) {
+			var urlx = CL + ins_url;
+			var cp_type = "Insured Copy"
+		} else if (IsInsuredDocType == false) {
+			var urlx = CL + agt_url;
+			var cp_type = "Agent Copy"
+		};
+		var FN = cp_type + " - " + NameInsured + " - " + PolicyNumber + " - " + TransactionType + " - " + TransactionEffectiveDate;
+		var filenamex = FN + ".pdf";
+		download(urlx, filenamex);
+		await delay(1);
+	};
+	await delay(2);
+	var rpt_obj = get_report(pl_url);
+	for (var i = 0; i < rpt_obj.PolicyActivities.length; i++) {
+		var ins_url = rpt_obj.PolicyActivities[i].InsuredTransactionPdfUrl;
+		var agt_url = rpt_obj.PolicyActivities[i].AgentTransactionPdfUrl;
+		var NameInsured = rpt_obj.PolicyActivities[i].NameInsured;
+		var PolicyNumber = rpt_obj.PolicyActivities[i].PolicyNumber;
+		var ProcessDate = rpt_obj.PolicyActivities[i].ProcessDate;
+		var TransactionType = rpt_obj.PolicyActivities[i].TransactionType;
+		var TransactionEffectiveDate = rpt_obj.PolicyActivities[i].TransactionEffectiveDate;
+		var IsInsuredDocType = rpt_obj.PolicyActivities[i].IsInsuredDocType;
+		if (IsInsuredDocType == true) {
+			var urlx = PL + ins_url;
+			var cp_type = "Insured Copy"
+		} else if (IsInsuredDocType == false) {
+			var urlx = PL + agt_url;
+			var cp_type = "Agent Copy"
+		};
+		var FN = cp_type + " - " + NameInsured + " - " + PolicyNumber + " - " + TransactionType + " - " + TransactionEffectiveDate;
+		var filenamex = FN + ".pdf";
+		download(urlx, filenamex);
+		await delay(1);
+	};
+	alert("Download done for CL/PL")
+};
+myAsyncFunction();
