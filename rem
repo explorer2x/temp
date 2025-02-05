@@ -1,0 +1,120 @@
+
+
+
+Sub main()
+    Dim wallFILE$, DBJSONFILE$
+    wallFILE = "D:\E\Python\2025\wall.txt"
+    DBJSONFILE = "D:\E\Python\2025\db.txt"
+
+    ' If the DBJSONFILE file does not exist, creates a new file at the specified filePath.
+    If Dir(DBJSONFILE) = "" Then
+        Open filePath For Output As #1
+        Close #1
+        debug.print "DBJSONFILE not exists, auto-created!"
+    End If
+
+    a = check_DBperWallid(wallFILE, DBJSONFILE)
+    Debug.Print a
+End Sub
+
+
+Function check_DBperWallid(wallFILE As String, DBJSONFILE As String) As String
+    Set db_dict = CreateObject("Scripting.Dictionary")
+
+    If Len(Dir(DBJSONFILE)) = 0 Then
+        Debug.Print "Database JSON file not found: " & DBJSONFILE
+        Exit Function
+    End If
+    
+    db_jsonvar = ReadTextFileToString(DBJSONFILE)
+    If db_jsonvar <> "" Then
+
+        Set db_JSON_col = JsonConverter.ParseJson(db_jsonvar)
+        
+        For i = 1 To db_JSON_col.Count
+            For j = 1 To db_JSON_col(i)("WallID").Count
+                db_wallid = db_JSON_col(i)("WallID")(j)
+                db_dict(db_wallid) = ""
+            Next j
+        Next i
+    Else
+        Set db_JSON_col = New Collection
+    End If
+
+    If Len(Dir(wallFILE)) = 0 Then
+        Debug.Print "Wall file not found: " & wallFILE
+        Exit Function
+    End If
+
+    wall_jsonvar = ReadTextFileToString(wallFILE)
+    Set wall_JSON_col = JsonConverter.ParseJson(wall_jsonvar)
+
+    For i = wall_JSON_col.Count To 1 Step -1
+        i_wallid = wall_JSON_col(i)("WallID")
+        If db_dict.Exists(i_wallid) Then
+            wall_JSON_col.Remove (i)
+        End If
+    Next i
+
+
+    Dim newadd_db_col As New Collection
+
+    For i = 1 To wall_JSON_col.Count
+        newadd_db_col.Add wall_JSON_col(i)("WallID")
+    Next i
+
+    timestamps = Format(Now, "mmddyyyyhhmm")
+    Set new_entry = CreateObject("Scripting.Dictionary")
+    new_entry("timestamps") = timestamps
+    Set new_entry("WallID") = newadd_db_col
+
+    db_JSON_col.Add new_entry
+    newDbString = ConvertToJson(db_JSON_col, Whitespace:=0)
+    Call txt2file_replace(DBJSONFILE, newDbString)
+
+    If wall_JSON_col.Count = 0 Then
+        check_DBperWallid = ""
+    Else
+        check_DBperWallid = ConvertToJson(wall_JSON_col, Whitespace:=0)
+    End If
+    Set db_dict = Nothing
+End Function
+
+Sub txt2file_replace(txtfile, jsonvar)
+    Dim fso As Object
+    Dim oFile As Object
+
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    Set oFile = fso.OpenTextFile(txtfile, 2, True)
+
+    oFile.Write jsonvar
+    oFile.Close
+
+    Set oFile = Nothing
+    Set fso = Nothing
+
+End Sub
+
+Function ReadTextFileToString(filePath) As String
+    Dim fileNumber As Integer
+    Dim line As String
+    Dim content As String
+    
+    fileNumber = FreeFile
+    
+    Open filePath For Input As #fileNumber
+
+    Do Until EOF(fileNumber)
+        Line Input #fileNumber, line
+        content = content & line
+    Loop
+
+    Close #fileNumber
+    
+    If Left(content, 3) = Chr(&HEF) & Chr(&HBB) & Chr(&HBF) Then
+        content = Mid(content, 4)
+    End If
+    ReadTextFileToString = content
+End Function
+
+
