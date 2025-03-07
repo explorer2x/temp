@@ -1,7 +1,7 @@
 ---
 markmap:
   activeNode: {}
-  initialExpandLevel: 
+  initialExpandLevel: 3
 ---
 
 # Workflow for Group Analysis
